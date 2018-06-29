@@ -17,10 +17,9 @@
   },
   "homepage": "https://github.com/lemnisSP/a20y#readme",
   "devDependencies": {
-    "@webpack-cli/init": "0.0.8",
     "ts-loader": "^4.4.2",
     "typescript": "^2.9.2",
     "webpack": "^4.13.0",
-    "webpack-cli": "^3.0.8"
+    "webpack-dev-server": "^3.1.4"
   }
 }
