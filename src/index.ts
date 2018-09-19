@@ -1,3 +1,3 @@
-let t:Number[] = [1, 3, 2];
+import Roletype from './role/Roletype';
 
-console.log(t);
+(window as any).Roletype = Roletype;
