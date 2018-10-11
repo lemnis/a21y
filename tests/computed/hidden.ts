@@ -79,14 +79,14 @@ export default () => {
 			chai.expect(hidden).to.be.true;
 		});
 
-		it('should be exposed with a aria-hidden set false and display set to none within css', async () => {
+		it('should be hidden with a aria-hidden set false and display set to none within css', async () => {
 			node.setAttribute('aria-hidden', 'false');
 			node.style.display = 'none';
 
 			const roletype = new Roletype(node);
 			const hidden = roletype.computed.hidden();
 
-			chai.expect(hidden).to.be.false;
+			chai.expect(hidden).to.be.true;
 		});
 
 		it('should be exposed with css who hides the element contents', async () => {

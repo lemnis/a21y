@@ -1,25 +1,30 @@
-import Roletype from "../role/Roletype";
+import Roletype from '../role/Roletype';
 
-export default function(ay: Roletype) : Boolean {
+export default function(current: Roletype): Boolean {
+  if (current.hidden === true) {
+    return current.hidden;
+  }
 
-	if(typeof ay.hidden === "boolean"){
-		return ay.hidden;
-	}
+  if (current.element instanceof HTMLElement && !current.element.offsetParent) {
+    return true;
+  }
 
-	if(ay.element instanceof HTMLElement && !ay.element.offsetParent) {
-		return true;
-	}
+  let boundingRect = current.element.getBoundingClientRect();
 
-	let boundingRect = ay.element.getBoundingClientRect();
+  if (
+    !boundingRect.height &&
+    !boundingRect.width &&
+    !boundingRect.left &&
+    !boundingRect.right
+  ) {
+    return true;
+  }
 
-	if(
-		!boundingRect.height &&
-		!boundingRect.width &&
-		!boundingRect.left &&
-		!boundingRect.right
-	){
-		return true;
-	}
+  let computedStyles = getComputedStyle(current.element);
 
-	return false;
+  if (computedStyles.visibility === 'hidden') {
+    return true;
+  }
+
+  return false;
 }
