@@ -2,7 +2,7 @@
 import Roletype from './../../../../src/role/Roletype';
 
 export default () => {
-	describe('spinbutton', () => {
+	describe('menu', () => {
 		let node: HTMLInputElement;
 
 		beforeEach(() => {
@@ -17,13 +17,16 @@ export default () => {
         });
         
         it('embedded within label', async () => {
-			let label = document.createElement('label');
+			const label = document.createElement('label');
 			label.setAttribute('for', 'test');
 			label.innerHTML = `
-			    foo
-			    <input role="spinbutton" type="number" value="5" min="1"
-			    max="10" aria-valuenow="5" aria-valuemin="1" aria-valuemax="10">
-			    baz
+                Flash the screen
+                <span role="menu">
+                    <span role="menuitem" aria-selected="true">1</span>
+                    <span role="menuitem" hidden>2</span>
+                    <span role="menuitem" hidden>3</span>
+                </span>
+                times.
 			`;
 			document.body.appendChild(label);
 
@@ -31,19 +34,22 @@ export default () => {
 			const name = await roletype.computed.name();
 
 			document.body.removeChild(label);
-			chai.expect(name).to.equal('foo 5 baz');
+			chai.expect(name).to.equal('Flash the screen times.');
         });
         
         it('embedded within label from file input', async () => {
 			(node as HTMLInputElement).type = 'file';
 
-			let label = document.createElement('label');
+			const label = document.createElement('label');
 			label.setAttribute('for', 'test');
 			label.innerHTML = `
-			    foo
-			    <input role="spinbutton" type="number" value="5" min="1"
-			    max="10" aria-valuenow="5" aria-valuemin="1" aria-valuemax="10">
-			    baz
+                Flash the screen
+                <span role="menu">
+                    <span role="menuitem" aria-selected="true">1</span>
+                    <span role="menuitem" hidden>2</span>
+                    <span role="menuitem" hidden>3</span>
+                </span>
+                times.
 			`;
 			document.body.appendChild(label);
 
@@ -51,7 +57,7 @@ export default () => {
 			const name = await roletype.computed.name();
 
 			document.body.removeChild(label);
-			chai.expect(name).to.equal('foo 5 baz');
+			chai.expect(name).to.equal('Flash the screen times.');
         });
     });
 };

@@ -349,7 +349,7 @@ export default () => {
 			chai.expect(name).to.equal('crazy');
 		});
 
-		it('with native linked label element with psuedo element - 552', async () => {
+		it('with native linked label element with pseudo element - 552', async () => {
 			node.value = 'baz';
 
 			let label = document.createElement('label');
@@ -370,7 +370,7 @@ export default () => {
 			chai.expect(name).to.equal('fancy fruit');
 		});
 
-		it('with native linked label element with psuedo element using a attribute as content - 553', async () => {
+		it('with native linked label element with pseudo element using a attribute as content - 553', async () => {
 			node.value = 'baz';
 
 			let label = document.createElement('label');
@@ -433,7 +433,7 @@ export default () => {
 			chai.expect(name).to.equal('foo bar');
 		});
 
-		it('inside label with psuedo elements - 659', async () => {
+		it('inside label with pseudo elements - 659', async () => {
 			node.name = 'text';
 			node.title = 'bar';
 
@@ -460,7 +460,7 @@ export default () => {
 			chai.expect(name).to.equal('foo bar baz');
 		});
 
-		it('as password inside label with psuedo elements - 660', async () => {
+		it('as password inside label with pseudo elements - 660', async () => {
 			node.name = 'test';
 			node.title = 'bar';
 			node.type = 'password';
@@ -488,7 +488,7 @@ export default () => {
 			chai.expect(name).to.equal('foo bar baz');
 		});
 
-		it('as checkbox inside label with psuedo elements - 661', async () => {
+		it('as checkbox inside label with pseudo elements - 661', async () => {
 			node.name = 'test';
 			node.title = '  bar ';
 			node.type = 'checkbox';
@@ -515,7 +515,7 @@ export default () => {
 			chai.expect(name).to.equal('foo bar baz');
 		});
 
-		it('as radio inside label with psuedo elements - 662', async () => {
+		it('as radio inside label with pseudo elements - 662', async () => {
 			node.name = 'test';
 			node.title = '  bar ';
 			node.type = 'radio';
@@ -542,7 +542,7 @@ export default () => {
 			chai.expect(name).to.equal('foo bar baz');
 		});
 
-		it('as radio inside label with psuedo elements - 663a', async () => {
+		it('as radio inside label with pseudo elements - 663a', async () => {
 			node.name = 'test';
 			node.title = 'bar';
 			node.type = 'img';

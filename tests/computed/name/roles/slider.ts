@@ -2,13 +2,12 @@
 import Roletype from './../../../../src/role/Roletype';
 
 export default () => {
-	describe('spinbutton', () => {
+	describe('slider', () => {
 		let node: HTMLInputElement;
 
 		beforeEach(() => {
 			node = document.createElement('input');
 			node.id = 'test';
-			node.type = 'checkbox';
 			document.body.appendChild(node);
 		});
 
@@ -21,7 +20,7 @@ export default () => {
 			label.setAttribute('for', 'test');
 			label.innerHTML = `
 			    foo
-			    <input role="spinbutton" type="number" value="5" min="1"
+			    <input role="slider" type="range" value="5" min="1"
 			    max="10" aria-valuenow="5" aria-valuemin="1" aria-valuemax="10">
 			    baz
 			`;
@@ -41,7 +40,7 @@ export default () => {
 			label.setAttribute('for', 'test');
 			label.innerHTML = `
 			    foo
-			    <input role="spinbutton" type="number" value="5" min="1"
+			    <input role="slider" type="range" value="5" min="1"
 			    max="10" aria-valuenow="5" aria-valuemin="1" aria-valuemax="10">
 			    baz
 			`;
