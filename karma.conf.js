@@ -1,24 +1,24 @@
 // Karma configuration
 // Generated on Tue Aug 21 2018 19:49:33 GMT+0200 (W. Europe Daylight Time)
 
-var webpackConfig = require("./webpack.tests");
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+var webpackConfig = require('./webpack.tests');
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: "",
+    basePath: '',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ["mocha"],
+    frameworks: ['mocha'],
 
     // list of files / patterns to load in the browser
     files: [
-      "dist/tests.js",
-      "node_modules/chai/chai.js",
-      { pattern: "tests/**/*.ts", watched: false },
-      { pattern: "dist/**/*.ts", watched: false }
+      'dist/tests.js',
+      'node_modules/chai/chai.js',
+      { pattern: 'tests/**/*.ts', watched: false },
+      { pattern: 'dist/**/*.ts', watched: false }
     ],
 
     // list of files / patterns to exclude
@@ -26,17 +26,16 @@ module.exports = function(config) {
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-      "tests/**/*.ts": ["webpack"],
-      "dist/**/*.ts": ["webpack"]
-    },
+    // preprocessors: {
+    //   "tests/index.ts": ["webpack"]
+    // },
 
     webpack: webpackConfig,
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ["mocha"],
+    reporters: ['mocha'],
 
     // web server port
     port: 9876,
@@ -53,28 +52,37 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ["ChromeHeadlessWithAom"],
+    browsers: ['ChromeHeadlessWithAom'],
 
     // you can define custom flags
     customLaunchers: {
       ChromeWithAom: {
-        base: "Chrome",
+        base: 'Chrome',
         flags: [
-          "--enable-blink-features=AccessibilityObjectModel",
-          "--enable-experimental-web-platform-features"
+          '--enable-blink-features=AccessibilityObjectModel',
+          '--enable-experimental-web-platform-features',
+          '--remote-debugging-port=9333'
         ]
       },
       ChromeHeadlessWithAom: {
-        base: "ChromeHeadless",
+        base: 'ChromeHeadless',
         flags: [
-          "--enable-blink-features=AccessibilityObjectModel",
-          "--enable-experimental-web-platform-features"
+          '--enable-blink-features=AccessibilityObjectModel',
+          '--enable-experimental-web-platform-features',
+          '--remote-debugging-port=9333'
         ]
       },
       FirefoxWithAom: {
-        base: "Firefox",
+        base: 'Firefox',
         prefs: {
-          "accessibility.AOM.enabled": true
+          'accessibility.AOM.enabled': true
+        }
+      },
+      FirefoxHeadlessWithAom: {
+        base: 'Firefox',
+        flags: ['--headless'],
+        prefs: {
+          'accessibility.AOM.enabled': true
         }
       }
     },
@@ -87,4 +95,4 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity
   });
-}
+};
