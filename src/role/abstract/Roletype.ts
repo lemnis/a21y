@@ -1,31 +1,40 @@
-import Interface from './RoletypeInterface';
-import {
-  string,
-  boolean,
-  number,
-  roletype,
-  RoletypeList
-} from '../utils/types';
-import enumerable from '../utils/enumerable';
+import Interface from '../RoletypeInterface';
+import { string, boolean, number, roletype, RoletypeList } from '../../utils/types';
+import enumerable from '../../utils/enumerable';
 
-import hidden from '../computed/hidden';
-import name from '../computed/name';
-import description from '../computed/description';
-import role from '../computed/role';
-import value from '../computed/value';
-import selectedOptions from '../computed/selectedOptions';
-import parent from '../computed/parent';
-import children from '../computed/children';
+import hidden from '../../computed/hidden';
+import name from '../../computed/name';
+import description from '../../computed/description';
+import role from '../../computed/role';
+import value from '../../computed/value';
+import selectedOptions from '../../computed/selectedOptions';
+import parent from '../../computed/parent';
+import children from '../../computed/children';
+import ignored from '../../computed/ignored';
+import focusable from '../../computed/focusable';
 
 export default class Roletype implements Interface {
-  constructor(public element: Element) {}
+  individualSettings() {}
+  static extends: typeof Roletype[];
+
+  constructor(public element: Element) {
+    this.individualSettings();
+  }
 
   @enumerable(true)
-  get role(): null | string {
+  get role(){
     return string.get(this, 'role');
   }
   set role(value: null | string) {
     string.set(this, 'role', value);
+  }
+
+  @enumerable(true)
+  get atomic(): null | boolean {
+    return boolean.get(this, 'aria-atomic');
+  }
+  set atomic(value: null | boolean) {
+    boolean.set(this, 'aria-atomic', value);
   }
 
   @enumerable(true)
@@ -46,7 +55,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get current(): null | string {
-    return string.get(this, 'aria-current', 'false');
+    return string.get(this, 'aria-current');
   }
   set current(value: null | string) {
     string.set(this, 'aria-current', value);
@@ -54,7 +63,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get autoComplete(): null | string {
-    return string.get(this, 'aria-autocomplete', 'none');
+    return string.get(this, 'aria-autocomplete');
   }
   set autoComplete(value: null | string) {
     string.set(this, 'aria-autocomplete', value);
@@ -78,7 +87,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get modal(): null | boolean {
-    return boolean.get(this, 'aria-modal', false);
+    return boolean.get(this, 'aria-modal');
   }
   set modal(value: null | boolean) {
     boolean.set(this, 'aria-modal', value);
@@ -86,7 +95,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get multiLine(): null | boolean {
-    return boolean.get(this, 'aria-multiline', false);
+    return boolean.get(this, 'aria-multiline');
   }
   set multiLine(value: null | boolean) {
     boolean.set(this, 'aria-multiline', value);
@@ -94,7 +103,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get multiSelectable(): null | boolean {
-    return boolean.get(this, 'aria-multiselectable', false);
+    return boolean.get(this, 'aria-multiselectable');
   }
   set multiSelectable(value: null | boolean) {
     boolean.set(this, 'aria-multiselectable', value);
@@ -110,7 +119,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get readOnly(): null | boolean {
-    return boolean.get(this, 'aria-readonly', false);
+    return boolean.get(this, 'aria-readonly');
   }
   set readOnly(value: null | boolean) {
     boolean.set(this, 'aria-readonly', value);
@@ -118,7 +127,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get required(): null | boolean {
-    return boolean.get(this, 'aria-required', false);
+    return boolean.get(this, 'aria-required');
   }
   set required(value: null | boolean) {
     boolean.set(this, 'aria-required', value);
@@ -134,7 +143,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get sort(): null | string {
-    return string.get(this, 'aria-sort', 'none');
+    return string.get(this, 'aria-sort');
   }
   set sort(value: null | string) {
     string.set(this, 'aria-sort', value);
@@ -158,7 +167,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get disabled(): null | boolean {
-    return boolean.get(this, 'aria-disabled', false);
+    return boolean.get(this, 'aria-disabled');
   }
   set disabled(value: null | boolean) {
     boolean.set(this, 'aria-disabled', value);
@@ -166,7 +175,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get invalid(): null | string {
-    return string.get(this, 'aria-invalid', 'false');
+    return string.get(this, 'aria-invalid');
   }
   set invalid(value: null | string) {
     string.set(this, 'aria-invalid', value);
@@ -174,7 +183,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get hasPopup(): null | string {
-    return string.get(this, 'aria-haspopup', 'false');
+    return string.get(this, 'aria-haspopup');
   }
   set hasPopup(value: null | string) {
     string.set(this, 'aria-haspopup', value);
@@ -221,16 +230,8 @@ export default class Roletype implements Interface {
   }
 
   @enumerable(true)
-  get atomic(): null | boolean {
-    return boolean.get(this, 'aria-atomic', false);
-  }
-  set atomic(value: null | boolean) {
-    boolean.set(this, 'aria-atomic', value);
-  }
-
-  @enumerable(true)
   get busy(): null | boolean {
-    return boolean.get(this, 'aria-busy', false);
+    return boolean.get(this, 'aria-busy');
   }
   set busy(value: null | boolean) {
     boolean.set(this, 'aria-busy', value);
@@ -238,7 +239,7 @@ export default class Roletype implements Interface {
 
   @enumerable(true)
   get live(): null | string {
-    return string.get(this, 'aria-live', 'off');
+    return string.get(this, 'aria-live');
   }
   set live(value: null | string) {
     string.set(this, 'aria-live', value);
@@ -383,12 +384,16 @@ export default class Roletype implements Interface {
 
   public computed = {
     role: () => role(this),
-    name: () => name(this, null),
+    name: () => name(this),
     hidden: () => hidden(this),
     autoComplete: null,
 
+    ignored: () => ignored(this),
     parent: () => parent(this),
     children: () => children(this),
+
+    focusable: () => focusable(this.element),
+    tabbable: null,
 
     multiSelectable: null,
     multiLine: null,
@@ -415,26 +420,50 @@ export default class Roletype implements Interface {
     rowSpan: null,
     setSize: null,
     level: null,
-    description: () => description(this, null),
+    description: () => description(this),
     controls: null,
 
     owns: null
   };
 
-  public _ = {
+  public _: {
+    attributes: any;
+    defaults: any;
+    allowsNameFromAuthor: boolean;
+    allowsNameFromContent: boolean;
+    childrenPresentational: boolean;
+    owns: string[];
+    implicit: string[];
+  } = {
+    allowsNameFromAuthor: true,
+    allowsNameFromContent: false,
+    childrenPresentational: false,
+    owns: [],
+    implicit: [],
     attributes: {
-      role: null as string,
-      'aria-roledescription': null as string,
-      'aria-labelledby': (() => new RoletypeList(this, 'aria-labelledby')).call(
-        this
-      ),
-      'aria-describedby': (() =>
-        new RoletypeList(this, 'aria-describedby')).call(this),
-      'aria-controls': (() => new RoletypeList(this, 'aria-controls')).call(
-        this
-      ),
+      role: null as string | null,
+      'aria-roledescription': null as string | null,
+      'aria-labelledby': (() => new RoletypeList(this, 'aria-labelledby')).call(this),
+      'aria-describedby': (() => new RoletypeList(this, 'aria-describedby')).call(this),
+      'aria-controls': (() => new RoletypeList(this, 'aria-controls')).call(this),
       'aria-flowto': (() => new RoletypeList(this, 'aria-flowto')).call(this),
       'aria-owns': (() => new RoletypeList(this, 'aria-owns')).call(this)
+    },
+    defaults: {
+      'aria-current': 'false',
+      'aria-autocomplete': 'none',
+      'aria-modal': false,
+      'aria-multiline': false,
+      'aria-multiselectable': false,
+      'aria-readonly': false,
+      'aria-required': false,
+      'aria-sort': 'none',
+      'aria-disabled': false,
+      'aria-invalid': 'false',
+      'aria-haspopup': 'false',
+      'aria-atomic': false,
+      'aria-busy': false,
+      'aria-live': 'off'
     }
   };
 
@@ -444,5 +473,22 @@ export default class Roletype implements Interface {
     }
 
     return this.element.id;
+  }
+
+  static [Symbol.hasInstance](instance: Roletype) {
+    const checkExtends = (superClasses: typeof Roletype[]) =>
+      superClasses.some((superClass: any) => {
+        if (superClass === this) return true;
+        // if (Array.isArray(superClass.extends)) // return checkExtends(superClass.extends) as boolean;
+        return false;
+      });
+
+    if (this.prototype.isPrototypeOf(instance)) return true;
+
+    if (instance.constructor.hasOwnProperty('extends')) {
+      return checkExtends((instance.constructor as any).extends);
+    }
+
+    return false;
   }
 }
