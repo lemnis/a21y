@@ -1,184 +1,243 @@
-import Roletype from './../role/Roletype';
+import Roletype from '../role/abstract/Roletype';
+import element from '../element';
+import nativeCounterparts, { propertyMapping } from '../attributes';
 
-let string = {
-	get(ay: Roletype, attributeName: string, fallback?: string){
-		return ay._.attributes[attributeName] || ay.element.getAttribute(attributeName) || fallback || null;
-	},
-	set(ay: Roletype, attributeName: string, value: string | null) {
-		if (value == undefined) {
-			ay.element.removeAttribute(attributeName);
-		} else {
-			ay.element.setAttribute(attributeName, value);
-		}
+import {
+  ariaAttributesOfTypeString,
+  ariaAttributesOfTypeRoletype,
+  ariaAttributesOfTypeNumber,
+  ariaAttributesOfTypeBoolean,
+  ariaAttributesOfTypeRoletypeList,
+  ariaAttributes
+} from '../interfaces/ariaAttributes';
 
-		ay._.attributes[attributeName] = value;
-	}
+function getNativeCounterpart(
+  current: Roletype,
+  name: keyof ariaAttributesOfTypeNumber,
+  before: boolean
+): propertyMapping<number | null> | undefined;
+function getNativeCounterpart(
+  current: Roletype,
+  name: keyof ariaAttributesOfTypeString,
+  before: boolean
+): propertyMapping<string | null> | undefined;
+function getNativeCounterpart(
+  current: Roletype,
+  name: keyof ariaAttributesOfTypeBoolean,
+  before: boolean
+): propertyMapping<boolean | null> | undefined;
+function getNativeCounterpart(
+  current: Roletype,
+  name: keyof ariaAttributes,
+  before: boolean
+): propertyMapping<any | null> | undefined {
+  if (nativeCounterparts.hasOwnProperty(name)) {
+    return (nativeCounterparts[name] as Array<propertyMapping<any>>).find(data => {
+      return !!data.validate && data.validate(current.element) && data.beforeAria === before;
+    });
+  }
+  return;
 }
 
-let boolean = {
-	/**
-	 * Returns the value of given attribute as Boolean
-	 * @param {Roletype} ay 
-	 * @param {string} attributeName 
-	 * @return {?boolean} attribute's value
-	 */
-	get(ay: Roletype, attributeName: string, fallback?: boolean) {
-		var value = ay._.attributes[attributeName] || ay.element.getAttribute(attributeName);
-		if (value == undefined || (value !== 'true' && value !== 'false')) return fallback || null;
-		return value === 'true';
-	},
+const string = {
+  get(current: Roletype, name: keyof ariaAttributesOfTypeString) {
+    var counterpart = getNativeCounterpart(current, name, true);
+    if (counterpart)
+      return counterpart.value(current.element);
 
-	/**
-	 * Sync the new value to the property
-	 * @param {AccessibleNode} ay 
-	 * @param {string} attributeName 
-	 * @param {?Boolean} status
-	 */
-	set(ay: Roletype, attributeName: string, status: boolean | null) {
-		if (status == undefined) {
-			ay.element.removeAttribute(attributeName);
-		} else {
-			ay.element.setAttribute(attributeName, status.toString());
-		}
+    const string = current._.attributes[name].value || current.element.getAttribute(name);
 
-		ay._.attributes[attributeName] = status;
-	}
+    if (string) {
+      if (current._.attributes[name].allows) {
+        if ((current._.attributes[name].allows as any[]).indexOf(string) > -1) {
+          return string;
+        }
+      } else if (string.trim()) {
+        return string.trim();
+      }
+    }
+
+    var counterpart = getNativeCounterpart(current, name, false);
+    if (counterpart)
+      return counterpart.value(current.element);
+
+    if (current._.attributes[name].default) return current._.attributes[name].default as string;
+    return null;
+  },
+  set(current: Roletype, name: keyof ariaAttributesOfTypeString, value: string | null) {
+    if (value == null) {
+      current.element.removeAttribute(name);
+    } else {
+      current.element.setAttribute(name, value);
+    }
+
+    current._.attributes[name].value = value;
+  }
 };
 
-let number = {
-	/**
-	 * Returns the value of a given attribute as Number
-	 * @param {AccessibleNode} ay 
-	 * @param {String} attributeName 
-	 * @return {Number} attribute's value
-	 */
-	get(ay: Roletype, attributeName: string) {
-		var value = ay._.attributes[attributeName] || ay.element.getAttribute(attributeName);
-		if (value == undefined) return null;
-		return Number(value);
-	},
+const boolean = {
+  /**
+   * Returns the value of given attribute as boolean
+   */
+  get(current: Roletype, name: keyof ariaAttributesOfTypeBoolean): boolean | null {
+    var counterpart = getNativeCounterpart(current, name, true);
+    if (counterpart)
+      return counterpart.value(current.element);
 
-	/**
-	 * Sync the new value to the DOM
-	 * @param {AccessibleNode} ay 
-	 * @param {String} attributeName 
-	 * @param {String | Number } status 
-	 */
-	set(ay: Roletype, attributeName: string, value: null | number) {
-		if(value == undefined) {
-			ay.element.removeAttribute(attributeName);
-		} else {
-			ay.element.setAttribute(attributeName, value.toString());
-		}
+    const value = current._.attributes[name].value || current.element.getAttribute(name);
+    if (typeof value === 'boolean') return value;
+    else if (value === 'true' || value === 'false') return value === 'true';
 
-		ay._.attributes[attributeName] = value;
-		return value;
-	}
-}
+    var counterpart = getNativeCounterpart(current, name, false);
+    if (counterpart)
+      return counterpart.value(current.element);
+
+    if (current._.attributes[name].default != null)
+      return current._.attributes[name].default as boolean;
+    return null;
+  },
+
+  /**
+   * Sync the new value to the property
+   */
+  set(current: Roletype, attributeName: keyof ariaAttributesOfTypeBoolean, status: boolean | null) {
+    if (status == undefined) {
+      current.element.removeAttribute(attributeName);
+    } else {
+      current.element.setAttribute(attributeName, status.toString());
+    }
+
+    current._.attributes[attributeName].value = status;
+  }
+};
+
+const number = {
+  /**
+   * Returns the value of a given attribute as Number
+   */
+  get(current: Roletype, attributeName: keyof ariaAttributesOfTypeNumber) {
+    var counterpart = getNativeCounterpart(current, name, true);
+    if (counterpart)
+      return counterpart.value(current.element);
+    const value =
+      current._.attributes[attributeName].value != null
+        ? current._.attributes[attributeName].value
+        : current.element.hasAttribute(attributeName)
+          ? current.element.getAttribute(attributeName)
+          : current._.attributes[attributeName].default != null
+            ? current._.attributes[attributeName].default
+            : null;
+    if (value == null) return null;
+    return Number(value);
+  },
+
+  /**
+   * Sync the new value to the DOM
+   */
+  set(current: Roletype, attributeName: keyof ariaAttributesOfTypeNumber, value: null | number) {
+    if (value == undefined) {
+      current.element.removeAttribute(attributeName);
+    } else {
+      current.element.setAttribute(attributeName, value.toString());
+    }
+    current._.attributes[attributeName].value = value;
+  }
+};
 
 class RoletypeList extends Set {
-	
-	constructor(public _self: Roletype, public _attributeName: string){
-		super();
+  constructor(
+    public _self: Roletype,
+    public _attributeName: keyof ariaAttributesOfTypeRoletypeList
+  ) {
+    super();
 
-		this._self = _self;
-		this._attributeName = _attributeName;
+    this._self = _self;
+    this._attributeName = _attributeName;
 
-		const linkedRoletypes = (_self.element.getAttribute(_attributeName) || "")
-			.split(" ")
-			.filter(id => !!id && !!document.getElementById(id))
-			.map(id => {
-				if(id === _self.element.id) {
-					return _self;
-				}
+    const linkedRoletypes = (_self.element.getAttribute(_attributeName) || '')
+      .split(' ')
+      .filter(id => !!id && !!document.getElementById(id))
+      .map(id => {
+        if (id === _self.element.id) {
+          return _self;
+        }
 
-				return new Roletype(document.getElementById(id))
-			});
+        return element(document.getElementById(id) as Element);
+      });
 
-		linkedRoletypes.forEach(roletype => this.add(roletype));
-	}
+    linkedRoletypes.forEach(roletype => this.add(roletype));
+  }
 
-	add(item){
-		if(!(item instanceof Roletype)){
-			throw new Error("Only instances of Roletype are allowed to be added.");
-		}
+  add(item: Roletype) {
+    if (!(item instanceof Roletype)) {
+      throw new Error('Only instances of Roletype are allowed to be added.');
+    }
 
-		// Only add id when it's a new item
-		if(!this.has(item)){
-			const idRefs = this._self.element.getAttribute(this._attributeName) || "";
-			this._self.element.setAttribute(this._attributeName, `${idRefs} ${item._id}`);
-		}
+    // Only add id when it's a new item
+    if (!this.has(item)) {
+      const idRefs = this._self.element.getAttribute(this._attributeName) || '';
+      const ids = new Set(idRefs.split(' '));
+      this._self.element.setAttribute(this._attributeName, Array.from(ids.add(item._id)).join(' '));
+    }
 
-		return super.add(item);
-	}
+    return super.add(item);
+  }
 
-	delete(item){
-		const successfulRemoval = super.delete(item);
+  delete(item: Roletype) {
+    const successfulRemoval = super.delete(item);
 
-		// Remove ID from attribute
-		if(successfulRemoval){
-			const oldIdRefs = (this._self.element.getAttribute(this._attributeName) || "").split(" ");
-			const idRefs = oldIdRefs.filter(id => id !== item._id);
-			this._self.element.setAttribute(this._attributeName, idRefs.join(" "));
-		}
+    // Remove ID from attribute
+    if (successfulRemoval) {
+      const oldIdRefs = (this._self.element.getAttribute(this._attributeName) || '').split(' ');
+      const idRefs = oldIdRefs.filter(id => id !== item._id);
+      this._self.element.setAttribute(this._attributeName, idRefs.join(' '));
+    }
 
-		return successfulRemoval;
-	}
+    return successfulRemoval;
+  }
 
-	clear(){
-		// Remove all IDs from attribute
-		this._self.element.removeAttribute(this._attributeName);
+  clear() {
+    // Remove all IDs from attribute
+    this._self.element.removeAttribute(this._attributeName);
 
-		return super.clear();
-	}
+    return super.clear();
+  }
 }
 
-let RoletypeListSetup = {
-	get() {},
+const roletype = {
+  get(current: Roletype, attributeName: keyof ariaAttributesOfTypeRoletype): Roletype | null {
+    if (current._.attributes[attributeName].value)
+      return current._.attributes[attributeName].value;
 
-	set(ay: Roletype, attributeName: string, value: null | RoletypeList) {
-		if(value != undefined && !(value instanceof RoletypeList)){
-			throw new Error(`Attribute '${attributeName}' only allows a instance of RoletypeList or a empty value.`);
-		}
-		
-		let newIds = [];
+    if (current.element.hasAttribute(attributeName)) {
+      const node = document.getElementById(current.element.getAttribute(attributeName) as string);
+      if (node) {
+        current._.attributes[attributeName].value = element(node);
+        return current._.attributes[attributeName].value;
+      }
+    }
 
-		if(value instanceof RoletypeList){
-			value.forEach((roletype => {
-				newIds.push(roletype._id);
-			}));
-		}
+    return null;
+  },
+  set(
+    current: Roletype,
+    attributeName: keyof ariaAttributesOfTypeRoletype,
+    roletype: Roletype | null
+  ) {
+    if (!(roletype instanceof Roletype) && roletype != undefined) {
+      throw new Error(
+        `Attribute '${attributeName}' only allows a instance of Roletype or null.`
+      );
+    }
 
-		ay.element.setAttribute(attributeName, newIds.join(" "));
+    if (roletype == undefined) {
+      current.element.removeAttribute(attributeName);
+    } else {
+      current.element.setAttribute(attributeName, roletype._id);
+    }
 
-		ay._.attributes[attributeName] = value;
-	}
+    current._.attributes[attributeName].value = roletype;
+  }
 };
 
-let roletype = {
-	get(ay: Roletype, attributeName: string, fallback?: string) {
-		return ay._.attributes[attributeName] || fallback || null;
-	},
-	set(ay: Roletype, attributeName: string, roletype: null | Roletype) {
-		if (roletype != undefined && !(roletype instanceof Roletype)) {
-			throw new Error(`Attribute '${attributeName}' only allows a instance of Roletype or a empty roletype.`);
-		}
-
-		if (roletype == undefined) {
-			ay.element.removeAttribute(attributeName);
-		} else {
-			ay.element.setAttribute(attributeName, roletype._id);
-		}
-
-		ay._.attributes[attributeName] = roletype;
-	}
-}
-
-export {
-	string,
-	boolean,
-	number,
-	RoletypeListSetup,
-	RoletypeList,
-	roletype
-};
+export { string, boolean, number, RoletypeList, roletype };
